@@ -16,8 +16,6 @@ RUN \
 	mkdir -p $DEST
 
 RUN \
-	mkdir -p $SRC && \
-	mkdir -p $DEST 
 	cd $SRC && \
 	wget http://ftp.gnu.org/gnu/binutils/binutils-2.25.tar.bz2 && \
 	tar xjf binutils-2.25.tar.bz2 && \
