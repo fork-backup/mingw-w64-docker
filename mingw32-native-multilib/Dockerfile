@@ -4,7 +4,8 @@ RUN \
 	useradd -ms /bin/bash builder && \
 	apt-get update && \
 	apt-get -y dist-upgrade && \
-	apt-get install -y wget make bzip2 gcc texinfo binutils-mingw-w64-i686 mingw-w64-i686-dev gcc-mingw-w64-i686 g++-mingw-w64-i686 gfortran-mingw-w64-i686 mingw-w64
+	apt-get install -y wget make bzip2 gcc texinfo binutils-mingw-w64-i686 mingw-w64-i686-dev gcc-mingw-w64-i686 \
+	g++-mingw-w64-i686 gfortran-mingw-w64-i686 mingw-w64
 
 USER builder
 
@@ -31,3 +32,31 @@ RUN \
 	$SRC/binutils-2.25/configure --prefix=$DEST --with-sysroot=$DEST --host=i686-w64-mingw32 --target=i686-w64-mingw32 --enable-targets=i686-w64-mingw32,x86_64-w64-mingw32 && \
 	make && \
 	make install
+
+RUN \
+	cd $SRC/gcc-4.9.2 && \
+	./contrib/download_prerequisites
+ 
+RUN \
+	mkdir -p $SRC/gcc-4.9.2/gcc/winsup/mingw && \
+	ln -s /usr/i686-w64-mingw32/include $SRC/gcc-4.9.2/gcc/winsup/mingw/include
+
+RUN \
+	mkdir -p $BUILDROOT/headers && \
+	cd $BUILDROOT/headers && \
+	$SRC/mingw-w64-v3.1.0/mingw-w64-headers/configure --prefix=$DEST/i686-w64-mingw32 --host=i686-w64-mingw32 --build=i686-w64-mingw32 && \
+	make && \
+	make install
+
+RUN \
+	ln -s $DEST/i686-w64-mingw32 $DEST/mingw && \
+	ln -s $DEST/i686-w64-mingw32/lib $DEST/i686-w64-mingw32/lib32
+
+RUN \
+	mkdir -p $BUILDROOT/gcc && \
+	cd $BUILDROOT/gcc && \
+	$SRC/gcc-4.9.2/configure --host=i686-w64-mingw32 --build=x86_64-w64-mingw32 --target=i686-w64-mingw32 \
+	  --prefix=$DEST/i686-w64-mingw32 --with-sysroot=$DEST --enable-targets=all --enable-languages=c,c++,fortran \
+	  CFLAGS="-I$SRC/gcc-4.9.2/gcc/ginclude -I/usr/x86_64-w64-mingw32/include" && \
+	make all-gcc && \
+	make install-gcc
