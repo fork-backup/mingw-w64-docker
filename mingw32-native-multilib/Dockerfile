@@ -1,9 +1,5 @@
 FROM debian:jessie
 
-ENV BUILDROOT ~/mingw
-ENV SRC ${BUILDROOT}/sources
-ENV DEST ${BUILDROOT}/dest
-
 RUN \
 	useradd -ms /bin/bash builder && \
 	apt-get update && \
@@ -11,6 +7,10 @@ RUN \
 	apt-get install -y make gcc texinfo binutils-mingw-w64-i686 mingw-w64-i686-dev gcc-mingw-w64-i686 g++-mingw-w64-i686 gfortran-mingw-w64-i686 mingw-w64
 
 USER builder
+
+ENV BUILDROOT ~/mingw
+ENV SRC ${BUILDROOT}/sources
+ENV DEST ${BUILDROOT}/dest
 
 RUN \
 	mkdir -p $SRC && \
