@@ -8,13 +8,16 @@ RUN \
 
 USER builder
 
-ENV BUILDROOT ~/mingw
-ENV SRC ${BUILDROOT}/sources
-ENV DEST ${BUILDROOT}/dest
+RUN \
+	BUILDROOT=~/mingw && \
+	SRC=$BUILDROOT/sources && \
+	DEST=$BUILDROOT/dest && \
+	mkdir -p $SRC && \
+	mkdir -p $DEST
 
 RUN \
 	mkdir -p $SRC && \
-	mkdir -p $DEST && \
+	mkdir -p $DEST 
 	cd $SRC && \
 	wget http://ftp.gnu.org/gnu/binutils/binutils-2.25.tar.bz2 && \
 	tar xjf binutils-2.25.tar.bz2 && \
