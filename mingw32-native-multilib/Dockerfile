@@ -1,3 +1,11 @@
+# This uses the Debian (or Ubuntu) cross compiler to build a native gcc for win32 with multilib support
+#
+# Based on: http://sourceforge.net/p/mingw-w64/wiki2/Native%20Win64%20compiler/
+#
+# Cross compiling notes:
+# - The minor version of gcc must match that of our cross compiler (4.9 in this case)
+# - Important parameters: http://gcc.gnu.org/onlinedocs/gccint/Configure-Terms.html
+
 FROM debian:jessie
 
 RUN \
