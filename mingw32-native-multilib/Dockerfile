@@ -8,10 +8,11 @@ RUN \
 
 USER builder
 
+ENV BUILDROOT /home/builder/mingw
+ENV SRC $BUILDROOT/sources
+ENV DEST $BUILDROOT/dest
+
 RUN \
-	BUILDROOT=~/mingw && \
-	SRC=$BUILDROOT/sources && \
-	DEST=$BUILDROOT/dest && \
 	mkdir -p $SRC && \
 	mkdir -p $DEST
 
