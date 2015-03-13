@@ -19,11 +19,19 @@ USER builder
 
 ENV HOST i686-w64-mingw32
 ENV BUILD x86_64-w64-mingw32
-ENV TARGET ix86_64-w64-mingw32
+ENV TARGET x86_64-w64-mingw32
 ENV BUILDROOT /home/builder/mingw
 ENV SRC $BUILDROOT/sources
 ENV DEST $BUILDROOT/dest
 ENV PREFIX $DEST/$TARGET
+
+HOST=i686-w64-mingw32
+BUILD=x86_64-w64-mingw32
+TARGET=i686-w64-mingw32
+BUILDROOT=/home/builder/mingw
+SRC=$BUILDROOT/sources
+DEST=$BUILDROOT/dest
+PREFIX=$DEST/$TARGET
 
 RUN \
 	mkdir -p $SRC && \
@@ -52,7 +60,7 @@ RUN \
 RUN \
 	mkdir -p $BUILDROOT/isl && \
 	cd $BUILDROOT/isl && \
-	$SRC/isl-0.12.2/configure --host=$HOST --build=$BUILD --prefix=$PREFIX --disable-shared --enable-static --with-gmp-prefix=$BUILDROOT && \
+	CPPFLAGS=-I$PREFIX/include LDFLAGS=-L$PREFIX/lib $SRC/isl-0.12.2/configure --host=$HOST --build=$BUILD --prefix=$PREFIX --disable-shared --enable-static --with-gmp-prefix=$BUILDROOT && \
 	make && \
 	make install
 
@@ -93,7 +101,7 @@ RUN \
 	  --enable-libgomp --disable-libstdcxx-pch --enable-fully-dynamic-string --enable-libstdcxx-time \
 	  --disable-nls --disable-werror --enable-checking=release \
 	  --with-gnu-as --with-gnu-ld \
-	  CFLAGS="-I$SRC/gcc-4.9.2/gcc/ginclude -I/usr/x86_64-w64-mingw32" && \
-	  LDFLAGS="-static" \
+	  CPPFLAGS="I$PREFIX/include -I$SRC/gcc-4.9.2/gcc/ginclude -I/usr/x86_64-w64-mingw32" && \
+	  LDFLAGS="-L$PREFIX/lib -static" \
 	make all-gcc && \
 	make install-gcc
