@@ -19,7 +19,7 @@ USER builder
 
 ENV HOST i686-w64-mingw32
 ENV BUILD x86_64-w64-mingw32
-ENV TARGET x86_64-w64-mingw32
+ENV TARGET ix86_64-w64-mingw32
 ENV BUILDROOT /home/builder/mingw
 ENV SRC $BUILDROOT/sources
 ENV DEST $BUILDROOT/dest
@@ -31,7 +31,9 @@ RUN \
 
 RUN \
 	cd $SRC && \
-	wget https://gmplib.org/download/gmp/gmp-6.0.0a.tar.bz2 && \
+	wget http://isl.gforge.inria.fr/isl-0.12.2.tar.bz2 && \
+	tar xvjf isl-0.12.2.tar.bz2 && \
+	wget http://gmplib.org/download/gmp/gmp-6.0.0a.tar.bz2 && \
 	tar xvjf gmp-6.0.0a.tar.bz2 && \
 	wget http://ftp.gnu.org/gnu/binutils/binutils-2.25.tar.bz2 && \
 	tar xjf binutils-2.25.tar.bz2 && \
@@ -44,6 +46,13 @@ RUN \
 	mkdir -p $BUILDROOT/gmp && \
 	cd $BUILDROOT/gmp && \
 	$SRC/gmp-6.0.0/configure --host=$HOST --build=$BUILD --prefix=$PREFIX --disable-shared --enable-static --enable-cxx && \
+	make && \
+	make install
+
+RUN \
+	mkdir -p $BUILDROOT/isl && \
+	cd $BUILDROOT/isl && \
+	$SRC/isl-0.12.2/configure --host=$HOST --build=$BUILD --prefix=$PREFIX --disable-shared --enable-static --with-gmp-prefix=$BUILDROOT && \
 	make && \
 	make install
 
