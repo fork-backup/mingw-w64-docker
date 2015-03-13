@@ -31,6 +31,8 @@ RUN \
 
 RUN \
 	cd $SRC && \
+	wget ftp://gcc.gnu.org/pub/gcc/infrastructure/mpc-0.8.1.tar.gz && \
+	tar xzvf mpc-0.8.1.tar.gz && \	
 	wget ftp://gcc.gnu.org/pub/gcc/infrastructure/mpfr-2.4.2.tar.bz2 && \
 	tar xvjf mpfr-2.4.2.tar.bz2 && \
 	wget http://isl.gforge.inria.fr/isl-0.12.2.tar.bz2 && \
@@ -92,15 +94,22 @@ RUN \
 	make install
 
 RUN \
+	mkdir -p $BUILDROOT/mpc && \
+	cd $BUILDROOT/mpc && \
+	CPPFLAGS="-I$PREFIX/include" LDFLAGS="-L$PREFIX/lib" $SRC/mpc-0.8.1/configure --host=$HOST --build=$BUILD --prefix=$PREFIX --disable-shared --enable-static --with-gmp=$BUILDROOT --with-mpfr=$BUILDROOT && \
+	make && \
+	make install	
+
+RUN \
 	mkdir -p $BUILDROOT/gcc && \
 	cd $BUILDROOT/gcc && \
 	CPPFLAGS="-I$PREFIX/include -I/usr/x86_64-w64-mingw32" \
 	LDFLAGS="-L$PREFIX/lib -static" && \	
 	$SRC/gcc-4.9.2/configure --host=$HOST --build=$BUILD --target=$TARGET \
 	  --prefix=$PREFIX --with-sysroot=$DEST --disable-multilib --enable-languages=c,c++,fortran \
-	  --with-gmp=$PREFIX --with-mpfr=$PREFIX \
+	  --with-gmp=$PREFIX --with-mpfr=$PREFIX --with-mpc=$PREFIX \
 	  --disable-shared --enable-static --enable-plugins \
-	  --enable-sjlj-exceptions --disable-dw2-exceptions --enable-threads=win32 \
+	  --enable-sjlj-exceptions --disable-dw2-exceptions --disable-seh-exceptions --enable-threads=win32 \
 	  --disable-cloog-version-check --enable-cloog-backend=isl --disable-isl-version-check \
 	  --enable-libgomp --disable-libstdcxx-pch --enable-fully-dynamic-string --enable-libstdcxx-time \
 	  --disable-nls --disable-werror --enable-checking=release \
