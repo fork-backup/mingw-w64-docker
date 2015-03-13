@@ -13,17 +13,30 @@ RUN \
 	apt-get update && \
 	apt-get -y dist-upgrade && \
 	apt-get install -y wget make bzip2 gcc texinfo binutils-mingw-w64-i686 mingw-w64-i686-dev gcc-mingw-w64-i686 \
-	g++-mingw-w64-i686 gfortran-mingw-w64-i686 mingw-w64 libcloog-isl-dev
+	g++-mingw-w64-i686 gfortran-mingw-w64-i686 mingw-w64 m4
 
 USER builder
 
+ENV HOST i686-w64-mingw32
+ENV BUILD x86_64-w64-mingw32
+ENV TARGET i686-w64-mingw32
 ENV BUILDROOT /home/builder/mingw
 ENV SRC $BUILDROOT/sources
 ENV DEST $BUILDROOT/dest
+ENV PREFIX $DEST/$TARGET
 
 RUN \
 	mkdir -p $SRC && \
 	mkdir -p $DEST
+
+RUN \
+	cd $SRC && \
+	wget https://gmplib.org/download/gmp/gmp-6.0.0a.tar.bz2 & \
+	tar xvjf gmp-6.0.0a.tar.bz2 && \
+	cd gmp-6.0.0 && \
+	./configure --host=$HOST --build=$BUILD	--prefix=$PREFIX --disable-shared --enable-static --enable-cxx && \
+	make && \
+	make install
 
 RUN \
 	cd $SRC && \
