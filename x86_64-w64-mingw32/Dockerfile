@@ -32,7 +32,7 @@ RUN \
 RUN \
 	cd $SRC && \
 	wget ftp://gcc.gnu.org/pub/gcc/infrastructure/mpc-0.8.1.tar.gz && \
-	tar xzvf mpc-0.8.1.tar.gz && \	
+	tar xzvf mpc-0.8.1.tar.gz && \
 	wget ftp://gcc.gnu.org/pub/gcc/infrastructure/mpfr-2.4.2.tar.bz2 && \
 	tar xvjf mpfr-2.4.2.tar.bz2 && \
 	wget http://isl.gforge.inria.fr/isl-0.12.2.tar.bz2 && \
@@ -98,13 +98,13 @@ RUN \
 	cd $BUILDROOT/mpc && \
 	CPPFLAGS="-I$PREFIX/include" LDFLAGS="-L$PREFIX/lib" $SRC/mpc-0.8.1/configure --host=$HOST --build=$BUILD --prefix=$PREFIX --disable-shared --enable-static --with-gmp=$BUILDROOT --with-mpfr=$BUILDROOT && \
 	make && \
-	make install	
+	make install
 
 RUN \
 	mkdir -p $BUILDROOT/gcc && \
 	cd $BUILDROOT/gcc && \
 	CPPFLAGS="-I$PREFIX/include -I/usr/x86_64-w64-mingw32" \
-	LDFLAGS="-L$PREFIX/lib -static" && \	
+	LD_LIBRARY_PATH="$PREFIX/lib" && \
 	$SRC/gcc-4.9.2/configure --build=$BUILD --host=$HOST --target=$TARGET \
 	  --prefix=$PREFIX --with-sysroot=$DEST --disable-multilib --enable-languages=c,c++,fortran \
 	  --with-gmp=$PREFIX --with-mpfr=$PREFIX --with-mpc=$PREFIX \
