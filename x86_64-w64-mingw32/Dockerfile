@@ -13,7 +13,7 @@ RUN \
 	apt-get update && \
 	apt-get -y dist-upgrade && \
 	apt-get install -y wget make bzip2 gcc texinfo binutils-mingw-w64-i686 mingw-w64-i686-dev gcc-mingw-w64-i686 \
-	g++-mingw-w64-i686 gfortran-mingw-w64-i686 mingw-w64
+	g++-mingw-w64-i686 gfortran-mingw-w64-i686 mingw-w64 libcloog-isl-dev
 
 USER builder
 
@@ -71,7 +71,7 @@ RUN \
 	  --enable-libgomp --disable-libstdcxx-pch --enable-fully-dynamic-string --enable-libstdcxx-time \
 	  --disable-nls --disable-werror --enable-checking=release \
 	  --with-gnu-as --with-gnu-ld \
-	  CFLAGS="-I/usr/x86_64-w64-mingw32/include" && \
+	  CFLAGS="-I$SRC/gcc-4.9.2/gcc/ginclude -I/usr/x86_64-w64-mingw32/include" && \
 	  LDFLAGS="-static" \
 	make all-gcc && \
 	make install-gcc

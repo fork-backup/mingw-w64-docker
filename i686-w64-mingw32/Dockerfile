@@ -13,7 +13,7 @@ RUN \
 	apt-get update && \
 	apt-get -y dist-upgrade && \
 	apt-get install -y wget make bzip2 gcc texinfo binutils-mingw-w64-i686 mingw-w64-i686-dev gcc-mingw-w64-i686 \
-	g++-mingw-w64-i686 gfortran-mingw-w64-i686 mingw-w64
+	g++-mingw-w64-i686 gfortran-mingw-w64-i686 mingw-w64 libcloog-isl-dev
 
 USER builder
 
