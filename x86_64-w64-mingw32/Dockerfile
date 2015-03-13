@@ -35,8 +35,8 @@ RUN \
 	tar xvjf mpfr-3.1.2.tar.bz2 && \
 	wget http://isl.gforge.inria.fr/isl-0.12.2.tar.bz2 && \
 	tar xvjf isl-0.12.2.tar.bz2 && \
-	wget http://gmplib.org/download/gmp/gmp-6.0.0a.tar.bz2 && \
-	tar xvjf gmp-6.0.0a.tar.bz2 && \
+	wget http://gmplib.org/download/gmp/gmp-4.3.2.tar.bz2 && \
+	tar xvjf gmp-4.3.2.tar.bz2 && \
 	wget http://ftp.gnu.org/gnu/binutils/binutils-2.25.tar.bz2 && \
 	tar xjf binutils-2.25.tar.bz2 && \
 	wget http://downloads.sourceforge.net/project/mingw-w64/mingw-w64/mingw-w64-release/mingw-w64-v3.1.0.tar.bz2 && \
@@ -73,7 +73,7 @@ RUN \
 RUN \
 	mkdir -p $BUILDROOT/gmp && \
 	cd $BUILDROOT/gmp && \
-	$SRC/gmp-6.0.0/configure --host=$HOST --build=$BUILD --prefix=$PREFIX --disable-shared --enable-static --enable-cxx && \
+	$SRC/gmp-4.3.2/configure --host=$HOST --build=$BUILD --prefix=$PREFIX --disable-shared --enable-static --enable-cxx && \
 	make && \
 	make install
 
