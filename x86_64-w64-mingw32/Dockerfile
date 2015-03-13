@@ -96,7 +96,7 @@ RUN \
 	cd $BUILDROOT/gcc && \
 	$SRC/gcc-4.9.2/configure --host=$HOST --build=$BUILD --target=$TARGET \
 	  --prefix=$PREFIX --with-sysroot=$DEST --disable-multilib --enable-languages=c,c++,fortran \
-	  --with-gmp=$PREFIX \
+	  --with-gmp=$PREFIX --with-mpfr=$PREFIX \
 	  --disable-shared --enable-static --enable-plugins \
 	  --enable-sjlj-exceptions --disable-dw2-exceptions --enable-threads=win32 \
 	  --disable-cloog-version-check --enable-cloog-backend=isl --disable-isl-version-check \
