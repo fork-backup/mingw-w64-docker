@@ -31,8 +31,8 @@ RUN \
 
 RUN \
 	cd $SRC && \
-	wget http://www.mpfr.org/mpfr-current/mpfr-3.1.2.tar.bz2 && \
-	tar xvjf mpfr-3.1.2.tar.bz2 && \
+	wget http://www.mpfr.org/mpfr-current/mpfr-2.4.2.tar.bz2 && \
+	tar xvjf mpfr-2.4.2.tar.bz2 && \
 	wget http://isl.gforge.inria.fr/isl-0.12.2.tar.bz2 && \
 	tar xvjf isl-0.12.2.tar.bz2 && \
 	wget http://gmplib.org/download/gmp/gmp-4.3.2.tar.bz2 && \
@@ -87,7 +87,7 @@ RUN \
 RUN \
 	mkdir -p $BUILDROOT/mpfr && \
 	cd $BUILDROOT/mpfr && \
-	CPPFLAGS="-I$SRC/gcc-4.9.2/gcc/ginclude -I$PREFIX/include" LDFLAGS="-L$PREFIX/lib" $SRC/mpfr-3.1.2/configure --host=$HOST --build=$BUILD --prefix=$PREFIX --disable-shared --enable-static --with-gmp=$BUILDROOT && \
+	CPPFLAGS="-I$SRC/gcc-4.9.2/gcc/ginclude -I$PREFIX/include" LDFLAGS="-L$PREFIX/lib" $SRC/mpfr-2.4.2/configure --host=$HOST --build=$BUILD --prefix=$PREFIX --disable-shared --enable-static --with-gmp=$BUILDROOT && \
 	make && \
 	make install
 
