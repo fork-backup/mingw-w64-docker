@@ -57,8 +57,8 @@ RUN \
 	make install
 
 RUN \
-	ln -s $DEST/i686-w64-mingw32 $DEST/mingw && \
-	ln -s $DEST/i686-w64-mingw32/lib $DEST/i686-w64-mingw32/lib32
+	ln -s $DEST/x86_64-w64-mingw32 $DEST/mingw && \
+	ln -s $DEST/ix86_64-w64-mingw32/lib $DEST/i686-w64-mingw32/lib64
 
 RUN \
 	mkdir -p $BUILDROOT/gcc && \
