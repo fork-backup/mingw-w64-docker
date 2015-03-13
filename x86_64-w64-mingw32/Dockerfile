@@ -66,5 +66,6 @@ RUN \
 	$SRC/gcc-4.9.2/configure --host=i686-w64-mingw32 --build=x86_64-w64-mingw32 --target=x86_64-w64-mingw32 \
 	  --prefix=$DEST/x86_64-w64-mingw32 --with-sysroot=$DEST --disable-multilib --enable-languages=c,c++,fortran \
 	  --disable-shared --enable-sjlj-exceptions --disable-seh-exceptions --enable-threads=win32 \
+	  CFLAGS="-I$SRC/gcc-4.9.2/gcc/ginclude -I/usr/x86_64-w64-mingw32/include" && \
 	make all-gcc && \
 	make install-gcc
