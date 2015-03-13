@@ -89,7 +89,7 @@ RUN \
 
 RUN \
 	ln -s $PREFIX $DEST/mingw && \
-	ln -s $PREFIX/lib $PREFIX/lib32
+	ln -s $PREFIX/lib $PREFIX/lib64
 
 RUN \
 	mkdir -p $BUILDROOT/gcc && \
