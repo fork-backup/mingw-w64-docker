@@ -52,7 +52,7 @@ RUN \
 RUN \
 	mkdir -p $BUILDROOT/headers && \
 	cd $BUILDROOT/headers && \
-	$SRC/mingw-w64-v3.1.0/mingw-w64-headers/configure --prefix=$DEST/x86_64-w64-mingw32 --host=i686-w64-mingw32 --build=i686-w64-mingw32 && \
+	$SRC/mingw-w64-v3.1.0/mingw-w64-headers/configure --prefix=$DEST/x86_64-w64-mingw32 --host=i686-w64-mingw32 --build=x86_64-w64-mingw32 && \
 	make && \
 	make install
 
@@ -63,7 +63,7 @@ RUN \
 RUN \
 	mkdir -p $BUILDROOT/gcc && \
 	cd $BUILDROOT/gcc && \
-	$SRC/gcc-4.9.2/configure --host=i686-w64-mingw32 --build=i686-w64-mingw32 --target=x86_64-w64-mingw32 \
+	$SRC/gcc-4.9.2/configure --host=i686-w64-mingw32 --build=x86_64-w64-mingw32 --target=x86_64-w64-mingw32 \
 	  --prefix=$DEST/x86_64-w64-mingw32 --with-sysroot=$DEST --disable-multilib --enable-languages=c,c++,fortran \
 	  --disable-shared --enable-static --enable-plugins \
 	  --enable-sjlj-exceptions --disable-seh-exceptions --enable-threads=win32 \
@@ -71,7 +71,7 @@ RUN \
 	  --enable-libgomp --disable-libstdcxx-pch --enable-fully-dynamic-string --enable-libstdcxx-time \
 	  --disable-nls --disable-werror --enable-checking=release \
 	  --with-gnu-as --with-gnu-ld \
-	  CFLAGS="-I/usr/i686-w64-mingw32/include" && \
+	  CFLAGS="-I/usr/x86_64-w64-mingw32/include" && \
 	  LDFLAGS="-static" \
 	make all-gcc && \
 	make install-gcc
