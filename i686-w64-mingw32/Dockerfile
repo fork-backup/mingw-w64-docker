@@ -103,7 +103,7 @@ RUN \
 	  --enable-libgomp --disable-libstdcxx-pch --enable-fully-dynamic-string --enable-libstdcxx-time \
 	  --disable-nls --disable-werror --enable-checking=release \
 	  --with-gnu-as --with-gnu-ld \
-	  CFLAGS="-I$SRC/gcc-4.9.2/gcc/ginclude -I$PREFIX/include -I/usr/x86_64-w64-mingw32" \
+	  CFLAGS="-I$PREFIX/include -I/usr/x86_64-w64-mingw32" \
 	  LDFLAGS="-L$PREFIX/lib -static" && \
 	make all-gcc && \
 	make install-gcc
