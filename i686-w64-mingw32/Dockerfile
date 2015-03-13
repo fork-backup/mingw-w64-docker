@@ -104,8 +104,8 @@ RUN \
 	mkdir -p $BUILDROOT/gcc && \
 	cd $BUILDROOT/gcc && \
 	CPPFLAGS="-I$PREFIX/include -I/usr/x86_64-w64-mingw32" \
-	LDFLAGS="-L$PREFIX/lib -static" && \
-	LD_LIBRARY_PATH="$PREFIX/lib" && \
+	LDFLAGS="-L$PREFIX/lib -static" \
+	LD_LIBRARY_PATH="$PREFIX/lib" \
 	$SRC/gcc-4.9.2/configure --build=$BUILD --host=$HOST --target=$TARGET \
 	  --prefix=$PREFIX --with-sysroot=$DEST --disable-multilib --enable-languages=c,c++,fortran \
 	  --with-gmp=$PREFIX --with-mpfr=$PREFIX --with-mpc=$PREFIX \
@@ -114,6 +114,6 @@ RUN \
 	  --disable-cloog-version-check --enable-cloog-backend=isl --disable-isl-version-check \
 	  --enable-libgomp --disable-libstdcxx-pch --enable-fully-dynamic-string --enable-libstdcxx-time \
 	  --disable-nls --disable-werror --enable-checking=release \
-	  --with-gnu-as --with-gnu-ld \
+	  --with-gnu-as --with-gnu-ld && \
 	make && \
 	make install
