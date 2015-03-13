@@ -105,7 +105,7 @@ RUN \
 	cd $BUILDROOT/gcc && \
 	CPPFLAGS="-I$PREFIX/include -I/usr/x86_64-w64-mingw32" \
 	LDFLAGS="-L$PREFIX/lib -static" && \	
-	$SRC/gcc-4.9.2/configure --host=$HOST --build=$BUILD --target=$TARGET \
+	$SRC/gcc-4.9.2/configure --build=$BUILD --host=$HOST --target=$TARGET \
 	  --prefix=$PREFIX --with-sysroot=$DEST --disable-multilib --enable-languages=c,c++,fortran \
 	  --with-gmp=$PREFIX --with-mpfr=$PREFIX --with-mpc=$PREFIX \
 	  --disable-shared --enable-static --enable-plugins \
@@ -114,5 +114,5 @@ RUN \
 	  --enable-libgomp --disable-libstdcxx-pch --enable-fully-dynamic-string --enable-libstdcxx-time \
 	  --disable-nls --disable-werror --enable-checking=release \
 	  --with-gnu-as --with-gnu-ld \
-	make all-gcc && \
-	make install-gcc
+	make && \
+	make install
