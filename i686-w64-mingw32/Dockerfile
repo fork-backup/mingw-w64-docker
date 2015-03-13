@@ -25,13 +25,14 @@ ENV SRC $BUILDROOT/sources
 ENV DEST $BUILDROOT/dest
 ENV PREFIX $DEST/$TARGET
 
-HOST=i686-w64-mingw32
-BUILD=x86_64-w64-mingw32
-TARGET=i686-w64-mingw32
-BUILDROOT=/home/builder/mingw
-SRC=$BUILDROOT/sources
-DEST=$BUILDROOT/dest
-PREFIX=$DEST/$TARGET
+RUN \
+	HOST=i686-w64-mingw32 && \
+	BUILD=x86_64-w64-mingw32 && \
+	TARGET=i686-w64-mingw32 && \
+	BUILDROOT=/home/builder/mingw && \
+	SRC=$BUILDROOT/sources && \
+	DEST=$BUILDROOT/dest && \
+	PREFIX=$DEST/$TARGET
 
 RUN \
 	mkdir -p $SRC && \
