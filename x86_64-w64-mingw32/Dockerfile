@@ -65,7 +65,13 @@ RUN \
 	cd $BUILDROOT/gcc && \
 	$SRC/gcc-4.9.2/configure --host=i686-w64-mingw32 --build=i686-w64-mingw32 --target=x86_64-w64-mingw32 \
 	  --prefix=$DEST/x86_64-w64-mingw32 --with-sysroot=$DEST --disable-multilib --enable-languages=c,c++,fortran \
-	  --disable-shared --enable-sjlj-exceptions --disable-seh-exceptions --enable-threads=win32 \
-	  CFLAGS="-I$SRC/gcc-4.9.2/gcc/ginclude -I/usr/i686-w64-mingw32/include" && \
+	  --disable-shared --enable-static --enable-plugins \
+	  --enable-sjlj-exceptions --disable-seh-exceptions --enable-threads=win32 \
+	  --disable-cloog-version-check --enable-cloog-backend=isl --disable-isl-version-check \
+	  --enable-libgomp --disable-libstdcxx-pch --enable-fully-dynamic-string --enable-libstdcxx-time \
+	  --disable-nls --disable-werror --enable-checking=release \
+	  --with-gnu-as --with-gnu-ld \
+	  CFLAGS="-I/usr/i686-w64-mingw32/include" && \
+	  LDFLAGS="-static" \
 	make all-gcc && \
 	make install-gcc
