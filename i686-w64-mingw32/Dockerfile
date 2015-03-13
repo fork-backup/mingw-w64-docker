@@ -31,7 +31,7 @@ RUN \
 
 RUN \
 	cd $SRC && \
-	wget http://www.mpfr.org/mpfr-current/mpfr-2.4.2.tar.bz2 && \
+	wget ftp://gcc.gnu.org/pub/gcc/infrastructure/mpfr-2.4.2.tar.bz2 && \
 	tar xvjf mpfr-2.4.2.tar.bz2 && \
 	wget http://isl.gforge.inria.fr/isl-0.12.2.tar.bz2 && \
 	tar xvjf isl-0.12.2.tar.bz2 && \
