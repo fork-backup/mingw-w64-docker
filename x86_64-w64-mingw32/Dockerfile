@@ -40,6 +40,8 @@ RUN \
 
 RUN \
 	cd $SRC && \
+	wget http://www.mpfr.org/mpfr-current/mpfr-3.1.2.tar.bz2 && \
+	tar xvjf mpfr-3.1.2.tar.bz2 && \
 	wget http://isl.gforge.inria.fr/isl-0.12.2.tar.bz2 && \
 	tar xvjf isl-0.12.2.tar.bz2 && \
 	wget http://gmplib.org/download/gmp/gmp-6.0.0a.tar.bz2 && \
@@ -50,20 +52,6 @@ RUN \
 	tar xjf mingw-w64-v3.1.0.tar.bz2 && \
 	wget http://ftp.gnu.org/gnu/gcc/gcc-4.9.2/gcc-4.9.2.tar.bz2 && \
 	tar xjf gcc-4.9.2.tar.bz2
-
-RUN \
-	mkdir -p $BUILDROOT/gmp && \
-	cd $BUILDROOT/gmp && \
-	$SRC/gmp-6.0.0/configure --host=$HOST --build=$BUILD --prefix=$PREFIX --disable-shared --enable-static --enable-cxx && \
-	make && \
-	make install
-
-RUN \
-	mkdir -p $BUILDROOT/isl && \
-	cd $BUILDROOT/isl && \
-	CPPFLAGS=-I$PREFIX/include LDFLAGS=-L$PREFIX/lib $SRC/isl-0.12.2/configure --host=$HOST --build=$BUILD --prefix=$PREFIX --disable-shared --enable-static --with-gmp-prefix=$BUILDROOT && \
-	make && \
-	make install
 
 RUN \
 	mkdir -p $BUILDROOT/binutils && \
@@ -92,6 +80,27 @@ RUN \
 	ln -s $PREFIX/lib $PREFIX/lib64
 
 RUN \
+	mkdir -p $BUILDROOT/gmp && \
+	cd $BUILDROOT/gmp && \
+	$SRC/gmp-6.0.0/configure --host=$HOST --build=$BUILD --prefix=$PREFIX --disable-shared --enable-static --enable-cxx && \
+	make && \
+	make install
+
+RUN \
+	mkdir -p $BUILDROOT/isl && \
+	cd $BUILDROOT/isl && \
+	CPPFLAGS=-I$PREFIX/include LDFLAGS=-L$PREFIX/lib $SRC/isl-0.12.2/configure --host=$HOST --build=$BUILD --prefix=$PREFIX --disable-shared --enable-static --with-gmp-prefix=$BUILDROOT && \
+	make && \
+	make install
+
+RUN \
+	mkdir -p $BUILDROOT/mpfr && \
+	cd $BUILDROOT/mpfr && \
+	CPPFLAGS="-I$SRC/gcc-4.9.2/gcc/ginclude -I$PREFIX/include" LDFLAGS="-L$PREFIX/lib" $SRC/mpfr-3.1.2/configure --host=$HOST --build=$BUILD --prefix=$PREFIX --disable-shared --enable-static --with-gmp=$BUILDROOT && \
+	make && \
+	make install
+
+RUN \
 	mkdir -p $BUILDROOT/gcc && \
 	cd $BUILDROOT/gcc && \
 	$SRC/gcc-4.9.2/configure --host=$HOST --build=$BUILD --target=$TARGET \
@@ -102,7 +111,7 @@ RUN \
 	  --enable-libgomp --disable-libstdcxx-pch --enable-fully-dynamic-string --enable-libstdcxx-time \
 	  --disable-nls --disable-werror --enable-checking=release \
 	  --with-gnu-as --with-gnu-ld \
-	  CFLAGS="-I$PREFIX/include -I$SRC/gcc-4.9.2/gcc/ginclude -I/usr/x86_64-w64-mingw32" \
+	  CFLAGS="-I$SRC/gcc-4.9.2/gcc/ginclude -I$PREFIX/include -I/usr/x86_64-w64-mingw32" \
 	  LDFLAGS="-L$PREFIX/lib -static" && \
 	make all-gcc && \
 	make install-gcc
