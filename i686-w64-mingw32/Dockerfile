@@ -52,7 +52,7 @@ RUN \
 RUN \
 	mkdir -p $BUILDROOT/headers && \
 	cd $BUILDROOT/headers && \
-	$SRC/mingw-w64-v3.1.0/mingw-w64-headers/configure --prefix=$DEST/i686-w64-mingw32 --host=i686-w64-mingw32 --build=x86_64-w64-mingw32 && \
+	$SRC/mingw-w64-v3.1.0/mingw-w64-headers/configure --prefix=$DEST/i686-w64-mingw32 --host=i686-w64-mingw32 --build=i686-w64-mingw32 && \
 	make && \
 	make install
 
@@ -63,9 +63,9 @@ RUN \
 RUN \
 	mkdir -p $BUILDROOT/gcc && \
 	cd $BUILDROOT/gcc && \
-	$SRC/gcc-4.9.2/configure --host=i686-w64-mingw32 --build=x86_64-w64-mingw32 --target=i686-w64-mingw32 \
+	$SRC/gcc-4.9.2/configure --host=i686-w64-mingw32 --build=i686-w64-mingw32 --target=i686-w64-mingw32 \
 	  --prefix=$DEST/i686-w64-mingw32 --with-sysroot=$DEST --disable-multilib --enable-languages=c,c++,fortran \
 	  --disable-shared --enable-sjlj-exceptions --disable-dw2-exceptions --enable-threads=win32 \
-	  CFLAGS="-I$SRC/gcc-4.9.2/gcc/ginclude -I/usr/x86_64-w64-mingw32/include" && \
+	  CFLAGS="-I$SRC/gcc-4.9.2/gcc/ginclude -I/usr/i686-w64-mingw32" && \
 	make all-gcc && \
 	make install-gcc
