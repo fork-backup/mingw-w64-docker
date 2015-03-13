@@ -51,9 +51,9 @@ RUN \
 	make && \
 	make install
 
-RUN \
-	cd $SRC/gcc-4.9.2 && \
-	./contrib/download_prerequisites
+# RUN \
+#	cd $SRC/gcc-4.9.2 && \
+#	./contrib/download_prerequisites
 
 RUN \
 	mkdir -p $SRC/gcc-4.9.2/gcc/winsup/mingw && \
