@@ -31,15 +31,8 @@ RUN \
 
 RUN \
 	cd $SRC && \
-	wget https://gmplib.org/download/gmp/gmp-6.0.0a.tar.bz2 & \
+	wget https://gmplib.org/download/gmp/gmp-6.0.0a.tar.bz2 && \
 	tar xvjf gmp-6.0.0a.tar.bz2 && \
-	cd gmp-6.0.0 && \
-	./configure --host=$HOST --build=$BUILD	--prefix=$PREFIX --disable-shared --enable-static --enable-cxx && \
-	make && \
-	make install
-
-RUN \
-	cd $SRC && \
 	wget http://ftp.gnu.org/gnu/binutils/binutils-2.25.tar.bz2 && \
 	tar xjf binutils-2.25.tar.bz2 && \
 	wget http://downloads.sourceforge.net/project/mingw-w64/mingw-w64/mingw-w64-release/mingw-w64-v3.1.0.tar.bz2 && \
@@ -48,9 +41,16 @@ RUN \
 	tar xjf gcc-4.9.2.tar.bz2
 
 RUN \
+	mkdir -p $BUILDROOT/gmp && \
+	cd $BUILDROOT/gmp && \
+	$SRC/gmp-6.0.0/configure --host=$HOST --build=$BUILD --prefix=$PREFIX --disable-shared --enable-static --enable-cxx && \
+	make && \
+	make install
+
+RUN \
 	mkdir -p $BUILDROOT/binutils && \
 	cd $BUILDROOT/binutils && \
-	$SRC/binutils-2.25/configure --prefix=$DEST --with-sysroot=$DEST --host=i686-w64-mingw32 --target=i686-w64-mingw32 --disable-multilib && \
+	$SRC/binutils-2.25/configure --prefix=$DEST --with-sysroot=$DEST --host=$HOST --target=$TARGET --disable-multilib && \
 	make && \
 	make install
 
@@ -65,19 +65,19 @@ RUN \
 RUN \
 	mkdir -p $BUILDROOT/headers && \
 	cd $BUILDROOT/headers && \
-	$SRC/mingw-w64-v3.1.0/mingw-w64-headers/configure --prefix=$DEST/i686-w64-mingw32 --host=i686-w64-mingw32 --build=x86_64-w64-mingw32 && \
+	$SRC/mingw-w64-v3.1.0/mingw-w64-headers/configure --prefix=$PREFIX --host=$HOST --build=$BUILD && \
 	make && \
 	make install
 
 RUN \
-	ln -s $DEST/i686-w64-mingw32 $DEST/mingw && \
-	ln -s $DEST/i686-w64-mingw32/lib $DEST/i686-w64-mingw32/lib32
+	ln -s $PREFIX $DEST/mingw && \
+	ln -s $PREFIX/lib $PREFIX/lib32
 
 RUN \
 	mkdir -p $BUILDROOT/gcc && \
 	cd $BUILDROOT/gcc && \
-	$SRC/gcc-4.9.2/configure --host=i686-w64-mingw32 --build=x86_64-w64-mingw32 --target=i686-w64-mingw32 \
-	  --prefix=$DEST/i686-w64-mingw32 --with-sysroot=$DEST --disable-multilib --enable-languages=c,c++,fortran \
+	$SRC/gcc-4.9.2/configure --host=$HOST --build=$BUILD --target=$TARGET \
+	  --prefix=$PREFIX --with-sysroot=$DEST --disable-multilib --enable-languages=c,c++,fortran \
 	  --disable-shared --enable-static --enable-plugins \
 	  --enable-sjlj-exceptions --disable-dw2-exceptions --enable-threads=win32 \
 	  --disable-cloog-version-check --enable-cloog-backend=isl --disable-isl-version-check \
