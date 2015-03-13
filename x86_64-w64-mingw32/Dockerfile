@@ -26,15 +26,6 @@ ENV DEST $BUILDROOT/dest
 ENV PREFIX $DEST/$TARGET
 
 RUN \
-	HOST=i686-w64-mingw32 && \
-	BUILD=x86_64-w64-mingw32 && \
-	TARGET=i686-w64-mingw32 && \
-	BUILDROOT=/home/builder/mingw && \
-	SRC=$BUILDROOT/sources && \
-	DEST=$BUILDROOT/dest && \
-	PREFIX=$DEST/$TARGET
-
-RUN \
 	mkdir -p $SRC && \
 	mkdir -p $DEST
 
@@ -105,6 +96,7 @@ RUN \
 	cd $BUILDROOT/gcc && \
 	$SRC/gcc-4.9.2/configure --host=$HOST --build=$BUILD --target=$TARGET \
 	  --prefix=$PREFIX --with-sysroot=$DEST --disable-multilib --enable-languages=c,c++,fortran \
+	  --with-gmp=$PREFIX \
 	  --disable-shared --enable-static --enable-plugins \
 	  --enable-sjlj-exceptions --disable-dw2-exceptions --enable-threads=win32 \
 	  --disable-cloog-version-check --enable-cloog-backend=isl --disable-isl-version-check \
