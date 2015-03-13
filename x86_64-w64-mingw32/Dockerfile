@@ -32,13 +32,13 @@ RUN \
 RUN \
 	cd $SRC && \
 	wget ftp://gcc.gnu.org/pub/gcc/infrastructure/mpc-0.8.1.tar.gz && \
-	tar xzvf mpc-0.8.1.tar.gz && \
+	tar xzf mpc-0.8.1.tar.gz && \
 	wget ftp://gcc.gnu.org/pub/gcc/infrastructure/mpfr-2.4.2.tar.bz2 && \
-	tar xvjf mpfr-2.4.2.tar.bz2 && \
+	tar xjf mpfr-2.4.2.tar.bz2 && \
 	wget http://isl.gforge.inria.fr/isl-0.12.2.tar.bz2 && \
-	tar xvjf isl-0.12.2.tar.bz2 && \
+	tar xjf isl-0.12.2.tar.bz2 && \
 	wget http://gmplib.org/download/gmp/gmp-4.3.2.tar.bz2 && \
-	tar xvjf gmp-4.3.2.tar.bz2 && \
+	tar xjf gmp-4.3.2.tar.bz2 && \
 	wget http://ftp.gnu.org/gnu/binutils/binutils-2.25.tar.bz2 && \
 	tar xjf binutils-2.25.tar.bz2 && \
 	wget http://downloads.sourceforge.net/project/mingw-w64/mingw-w64/mingw-w64-release/mingw-w64-v3.1.0.tar.bz2 && \
@@ -113,6 +113,7 @@ RUN \
 	  --disable-cloog-version-check --enable-cloog-backend=isl --disable-isl-version-check \
 	  --enable-libgomp --disable-libstdcxx-pch --enable-fully-dynamic-string --enable-libstdcxx-time \
 	  --disable-nls --disable-werror --enable-checking=release \
-	  --with-gnu-as --with-gnu-ld && \
+	  --with-gnu-as --with-gnu-ld \
+	  CFLAGS="-I$PREFIX/include -I/usr/x86_64-w64-mingw32" && \
 	make && \
 	make install
