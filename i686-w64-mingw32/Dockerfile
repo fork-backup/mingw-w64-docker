@@ -31,19 +31,19 @@ RUN \
 
 RUN \
 	cd $SRC && \
-	wget ftp://gcc.gnu.org/pub/gcc/infrastructure/mpc-0.8.1.tar.gz && \
+	wget -nv ftp://gcc.gnu.org/pub/gcc/infrastructure/mpc-0.8.1.tar.gz && \
 	tar xzf mpc-0.8.1.tar.gz && \
-	wget ftp://gcc.gnu.org/pub/gcc/infrastructure/mpfr-2.4.2.tar.bz2 && \
+	wget -nv ftp://gcc.gnu.org/pub/gcc/infrastructure/mpfr-2.4.2.tar.bz2 && \
 	tar xjf mpfr-2.4.2.tar.bz2 && \
-	wget http://isl.gforge.inria.fr/isl-0.12.2.tar.bz2 && \
+	wget -nv http://isl.gforge.inria.fr/isl-0.12.2.tar.bz2 && \
 	tar xjf isl-0.12.2.tar.bz2 && \
-	wget http://gmplib.org/download/gmp/gmp-4.3.2.tar.bz2 && \
+	wget -nv http://gmplib.org/download/gmp/gmp-4.3.2.tar.bz2 && \
 	tar xjf gmp-4.3.2.tar.bz2 && \
-	wget http://ftp.gnu.org/gnu/binutils/binutils-2.25.tar.bz2 && \
+	wget -nv http://ftp.gnu.org/gnu/binutils/binutils-2.25.tar.bz2 && \
 	tar xjf binutils-2.25.tar.bz2 && \
-	wget http://downloads.sourceforge.net/project/mingw-w64/mingw-w64/mingw-w64-release/mingw-w64-v3.1.0.tar.bz2 && \
+	wget -nv http://downloads.sourceforge.net/project/mingw-w64/mingw-w64/mingw-w64-release/mingw-w64-v3.1.0.tar.bz2 && \
 	tar xjf mingw-w64-v3.1.0.tar.bz2 && \
-	wget http://ftp.gnu.org/gnu/gcc/gcc-4.9.2/gcc-4.9.2.tar.bz2 && \
+	wget -nv http://ftp.gnu.org/gnu/gcc/gcc-4.9.2/gcc-4.9.2.tar.bz2 && \
 	tar xjf gcc-4.9.2.tar.bz2
 
 RUN \
@@ -103,9 +103,6 @@ RUN \
 RUN \
 	mkdir -p $BUILDROOT/gcc && \
 	cd $BUILDROOT/gcc && \
-	CPPFLAGS="-I$PREFIX/include -I/usr/x86_64-w64-mingw32" \
-	LDFLAGS="-L$PREFIX/lib -static" \
-	LD_LIBRARY_PATH="$PREFIX/lib" \
 	$SRC/gcc-4.9.2/configure --build=$BUILD --host=$HOST --target=$TARGET \
 	  --prefix=$PREFIX --with-sysroot=$DEST --disable-multilib --enable-languages=c,c++,fortran \
 	  --with-gmp=$PREFIX --with-mpfr=$PREFIX --with-mpc=$PREFIX \
@@ -114,7 +111,6 @@ RUN \
 	  --disable-cloog-version-check --enable-cloog-backend=isl --disable-isl-version-check \
 	  --enable-libgomp --disable-libstdcxx-pch --enable-fully-dynamic-string --enable-libstdcxx-time \
 	  --disable-nls --disable-werror --enable-checking=release \
-	  --with-gnu-as --with-gnu-ld \
-	  CFLAGS="-I$PREFIX/include -I/usr/x86_64-w64-mingw32" && \
+	  --with-gnu-as --with-gnu-ld && \
 	make && \
 	make install
