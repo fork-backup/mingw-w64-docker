@@ -42,7 +42,7 @@ RUN \
 	wget -nv http://ftp.gnu.org/gnu/binutils/binutils-2.25.tar.bz2 && \
 	tar xjf binutils-2.25.tar.bz2 && \
 	wget -nv http://downloads.sourceforge.net/project/mingw-w64/mingw-w64/mingw-w64-release/mingw-w64-v4.0.2.tar.bz2 && \
-	tar xjf mingw-w64-v3.1.0.tar.bz2 && \
+	tar xjf mingw-w64-v4.0.2.tar.bz2 && \
 	wget -nv http://ftp.gnu.org/gnu/gcc/gcc-4.9.2/gcc-4.9.2.tar.bz2 && \
 	tar xjf gcc-4.9.2.tar.bz2
 
@@ -64,7 +64,7 @@ RUN \
 RUN \
 	mkdir -p $BUILDROOT/headers && \
 	cd $BUILDROOT/headers && \
-	$SRC/mingw-w64-v3.1.0/mingw-w64-headers/configure --prefix=$PREFIX --host=$HOST --build=$BUILD && \
+	$SRC/mingw-w64-v4.0.2/mingw-w64-headers/configure --prefix=$PREFIX --host=$HOST --build=$BUILD && \
 	make && \
 	make install
 
