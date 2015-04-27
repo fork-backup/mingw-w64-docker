@@ -12,13 +12,14 @@ RUN \
 	useradd -ms /bin/bash builder && \
 	apt-get update && \
 	apt-get -y dist-upgrade && \
-	apt-get install -y wget make bzip2 gcc texinfo mingw-w64-x86-64-dev mingw-w64 m4
+	apt-get install -y wget make bzip2 gcc texinfo binutils-mingw-w64-i686 mingw-w64-i686-dev gcc-mingw-w64-i686 \
+	g++-mingw-w64-i686 gfortran-mingw-w64-i686 mingw-w64 m4
 
 USER builder
 
-ENV HOST x86_64-w64-mingw32
+ENV HOST i686-w64-mingw32
 ENV BUILD x86_64-w64-mingw32
-ENV TARGET x86_64-w64-mingw32
+ENV TARGET i686-w64-mingw32
 ENV BUILDROOT /home/builder/mingw
 ENV SRC $BUILDROOT/sources
 ENV DEST $BUILDROOT/dest
@@ -58,7 +59,7 @@ RUN \
 
 RUN \
 	mkdir -p $SRC/gcc-4.9.2/gcc/winsup/mingw && \
-	ln -s /usr/x86_64-w64-mingw32/include $SRC/gcc-4.9.2/gcc/winsup/mingw/include
+	ln -s /usr/i686-w64-mingw32/include $SRC/gcc-4.9.2/gcc/winsup/mingw/include
 
 RUN \
 	mkdir -p $BUILDROOT/headers && \
@@ -102,6 +103,7 @@ RUN \
 RUN \
 	mkdir -p $BUILDROOT/gcc && \
 	cd $BUILDROOT/gcc && \
+	ln -s . build-$TARGET && \
 	$SRC/gcc-4.9.2/configure --build=$BUILD --host=$HOST --target=$TARGET \
 	  --prefix=$PREFIX --with-sysroot=$DEST --disable-multilib --enable-languages=c,c++,fortran \
 	  --with-gmp=$PREFIX --with-mpfr=$PREFIX --with-mpc=$PREFIX \
