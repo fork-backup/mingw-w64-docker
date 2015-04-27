@@ -102,7 +102,7 @@ RUN \
 
 RUN \
 	mkdir -p $BUILDROOT/gcc && \
-	cd $BUILDROOT/gcc && 
+	cd $BUILDROOT/gcc && \
 	ln -s . build-$TARGET && \
 	$SRC/gcc-4.9.2/configure --build=$BUILD --host=$HOST --target=$TARGET \
 	  --prefix=$PREFIX --with-sysroot=$DEST --disable-multilib --enable-languages=c,c++,fortran \
