@@ -17,7 +17,7 @@ RUN \
 
 USER builder
 
-ENV HOST i686-w64-mingw32
+ENV HOST x86_64-w64-mingw32
 ENV BUILD x86_64-w64-mingw32
 ENV TARGET i686-w64-mingw32
 ENV BUILDROOT /home/builder/mingw
@@ -59,7 +59,7 @@ RUN \
 
 RUN \
 	mkdir -p $SRC/gcc-4.9.2/gcc/winsup/mingw && \
-	ln -s /usr/i686-w64-mingw32/include $SRC/gcc-4.9.2/gcc/winsup/mingw/include
+	ln -s /usr/x86_64-w64-mingw32/include $SRC/gcc-4.9.2/gcc/winsup/mingw/include
 
 RUN \
 	mkdir -p $BUILDROOT/headers && \
