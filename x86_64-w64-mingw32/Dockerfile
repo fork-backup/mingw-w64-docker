@@ -18,7 +18,7 @@ RUN \
 USER builder
 
 ENV HOST i686-w64-mingw32
-ENV BUILD x86_64-w64-mingw32
+ENV BUILD i686-w64-mingw32
 ENV TARGET x86_64-w64-mingw32
 ENV BUILDROOT /home/builder/mingw
 ENV SRC $BUILDROOT/sources
@@ -104,7 +104,6 @@ RUN \
 	mkdir -p $BUILDROOT/gcc && \
 	cd $BUILDROOT/gcc && \
 	ln -s . build-$BUILD && \
-	mkdir -p gcc && ln -sf auto-host.h gcc/auto-build.h && \
 	$SRC/gcc-4.9.2/configure --build=$BUILD --host=$HOST --target=$TARGET \
 	  --prefix=$PREFIX --with-sysroot=$DEST --disable-multilib --enable-languages=c,c++,fortran \
 	  --with-gmp=$PREFIX --with-mpfr=$PREFIX --with-mpc=$PREFIX \
