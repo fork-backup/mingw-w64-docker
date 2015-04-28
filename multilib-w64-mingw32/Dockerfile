@@ -66,7 +66,7 @@ RUN \
 RUN \
 	mkdir -p $BUILDROOT/headers && \
 	cd $BUILDROOT/headers && \
-	$SRC/mingw-w64-v4.0.2/mingw-w64-headers/configure --prefix=$PREFIX --host=$HOST --build=$BUILD && \
+	$SRC/mingw-w64-v4.0.2/mingw-w64-headers/configure --prefix=$PREFIX --host=$HOST --build=$BUILD --enable-targets=i686-w64-mingw32,x86_64-w64-mingw32 && \
 	make && \
 	make install
 
@@ -77,35 +77,35 @@ RUN \
 RUN \
 	mkdir -p $BUILDROOT/gmp && \
 	cd $BUILDROOT/gmp && \
-	$SRC/gmp-4.3.2/configure --host=$HOST --build=$BUILD --prefix=$PREFIX --disable-shared --enable-static --enable-cxx && \
+	$SRC/gmp-4.3.2/configure --host=$HOST --build=$BUILD --prefix=$PREFIX --disable-shared --enable-static --enable-cxx --enable-targets=i686-w64-mingw32,x86_64-w64-mingw32 && \
 	make && \
 	make install
 
 RUN \
 	mkdir -p $BUILDROOT/isl && \
 	cd $BUILDROOT/isl && \
-	CPPFLAGS=-I$PREFIX/include LDFLAGS=-L$PREFIX/lib $SRC/isl-0.12.2/configure --host=$HOST --build=$BUILD --prefix=$PREFIX --disable-shared --enable-static --with-gmp-prefix=$BUILDROOT && \
+	CPPFLAGS=-I$PREFIX/include LDFLAGS=-L$PREFIX/lib $SRC/isl-0.12.2/configure --host=$HOST --build=$BUILD --prefix=$PREFIX --disable-shared --enable-static --with-gmp-prefix=$BUILDROOT --enable-targets=i686-w64-mingw32,x86_64-w64-mingw32 && \
 	make && \
 	make install
 
 RUN \
 	mkdir -p $BUILDROOT/mpfr && \
 	cd $BUILDROOT/mpfr && \
-	CPPFLAGS="-I$SRC/gcc-4.9.2/gcc/ginclude -I$PREFIX/include" LDFLAGS="-L$PREFIX/lib" $SRC/mpfr-2.4.2/configure --host=$HOST --build=$BUILD --prefix=$PREFIX --disable-shared --enable-static --with-gmp=$BUILDROOT && \
+	CPPFLAGS="-I$SRC/gcc-4.9.2/gcc/ginclude -I$PREFIX/include" LDFLAGS="-L$PREFIX/lib" $SRC/mpfr-2.4.2/configure --host=$HOST --build=$BUILD --prefix=$PREFIX --disable-shared --enable-static --with-gmp=$BUILDROOT --enable-targets=i686-w64-mingw32,x86_64-w64-mingw32 && \
 	make && \
 	make install
 
 RUN \
 	mkdir -p $BUILDROOT/mpc && \
 	cd $BUILDROOT/mpc && \
-	CPPFLAGS="-I$PREFIX/include" LDFLAGS="-L$PREFIX/lib" $SRC/mpc-0.8.1/configure --host=$HOST --build=$BUILD --prefix=$PREFIX --disable-shared --enable-static --with-gmp=$BUILDROOT --with-mpfr=$BUILDROOT && \
+	CPPFLAGS="-I$PREFIX/include" LDFLAGS="-L$PREFIX/lib" $SRC/mpc-0.8.1/configure --host=$HOST --build=$BUILD --prefix=$PREFIX --disable-shared --enable-static --with-gmp=$BUILDROOT --with-mpfr=$BUILDROOT --enable-targets=i686-w64-mingw32,x86_64-w64-mingw32 && \
 	make && \
 	make install
 
 RUN \
 	mkdir -p $BUILDROOT/cloog && \
 	cd $BUILDROOT/cloog && \
-	CPPFLAGS="-I$PREFIX/include" LDFLAGS="-L$PREFIX/lib" $SRC/cloog-0.18.1/configure --host=$HOST --build=$BUILD --prefix=$PREFIX --with-gmp=$BUILDROOT --with-isl=$BUILDROOT --disable-shared --enable-static --prefix=$PREFIX && \
+	CPPFLAGS="-I$PREFIX/include" LDFLAGS="-L$PREFIX/lib" $SRC/cloog-0.18.1/configure --host=$HOST --build=$BUILD --prefix=$PREFIX --with-gmp=$BUILDROOT --with-isl=$BUILDROOT --disable-shared --enable-static --prefix=$PREFIX --enable-targets=i686-w64-mingw32,x86_64-w64-mingw32 && \
 	make && \
 	make install
 
@@ -114,7 +114,7 @@ RUN \
 	cd $BUILDROOT/gcc && \
 	mkdir -p gcc && ln -sf auto-host.h gcc/auto-build.h && \
 	$SRC/gcc-4.9.2/configure --build=$BUILD --host=$HOST --target=$TARGET \
-	  --prefix=$PREFIX --with-sysroot=$DEST --enable-targets=all --enable-languages=c,c++,fortran \
+	  --prefix=$PREFIX --with-sysroot=$DEST --enable-targets=i686-w64-mingw32,x86_64-w64-mingw32 --enable-languages=c,c++,fortran \
 	  --with-gmp=$PREFIX --with-mpfr=$PREFIX --with-mpc=$PREFIX --with-cloog=$PREFIX \
 	  --disable-shared --enable-static --enable-plugins --enable-cloog-backend=isl \
 	  --enable-sjlj-exceptions --disable-dw2-exceptions --disable-seh-exceptions --enable-threads=win32 \
