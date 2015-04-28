@@ -20,6 +20,7 @@ USER builder
 ENV HOST i686-w64-mingw32
 ENV BUILD x86_64-w64-mingw32
 ENV TARGET i686-w64-mingw32
+ENV THREADS win32
 ENV BUILDROOT /home/builder/mingw
 ENV SRC $BUILDROOT/sources
 ENV DEST $BUILDROOT/dest
@@ -113,7 +114,7 @@ RUN \
 	  --prefix=$PREFIX --with-sysroot=$DEST --enable-targets=i686-w64-mingw32,x86_64-w64-mingw32 --enable-languages=c,c++,fortran \
 	  --with-gmp=$PREFIX --with-mpfr=$PREFIX --with-mpc=$PREFIX --with-cloog=$PREFIX \
 	  --disable-shared --enable-static --enable-plugins --enable-cloog-backend=isl \
-	  --enable-sjlj-exceptions --disable-dw2-exceptions --disable-seh-exceptions --enable-threads=win32 \
+	  --enable-sjlj-exceptions --disable-dw2-exceptions --disable-seh-exceptions --enable-threads=$THREADS \
 	  --enable-libgomp --disable-libstdcxx-pch --enable-fully-dynamic-string --enable-libstdcxx-time \
 	  --disable-nls --disable-werror --enable-checking=release \
 	  --with-gnu-as --with-gnu-ld && \
