@@ -13,7 +13,7 @@ RUN \
 	apt-get update && \
 	apt-get -y dist-upgrade && \
 	apt-get install -y wget make bzip2 gcc g++ texinfo m4 \
-	mingw-w64 mingw-w64-x86-64-dev ingw-w64-i686-dev
+	mingw-w64 mingw-w64-x86-64-dev mingw-w64-i686-dev
 
 USER builder
 
