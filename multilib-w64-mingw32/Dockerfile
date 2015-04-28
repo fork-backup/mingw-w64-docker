@@ -13,13 +13,17 @@ RUN \
 	apt-get update && \
 	apt-get -y dist-upgrade && \
 	apt-get install -y wget make bzip2 gcc texinfo binutils-mingw-w64-i686 mingw-w64-i686-dev gcc-mingw-w64-i686 \
-	g++-mingw-w64-i686 gfortran-mingw-w64-i686 mingw-w64
+	g++-mingw-w64-i686 gfortran-mingw-w64-i686 mingw-w64 m4
 
 USER builder
 
+ENV HOST i686-w64-mingw32
+ENV BUILD x86_64-w64-mingw32
+ENV TARGET i686-w64-mingw32
 ENV BUILDROOT /home/builder/mingw
 ENV SRC $BUILDROOT/sources
 ENV DEST $BUILDROOT/dest
+ENV PREFIX $DEST/$TARGET
 
 RUN \
 	mkdir -p $SRC && \
@@ -27,24 +31,28 @@ RUN \
 
 RUN \
 	cd $SRC && \
-	wget http://ftp.gnu.org/gnu/binutils/binutils-2.25.tar.bz2 && \
+	wget -nv ftp://gcc.gnu.org/pub/gcc/infrastructure/mpc-0.8.1.tar.gz && \
+	tar xzf mpc-0.8.1.tar.gz && \
+	wget -nv ftp://gcc.gnu.org/pub/gcc/infrastructure/mpfr-2.4.2.tar.bz2 && \
+	tar xjf mpfr-2.4.2.tar.bz2 && \
+	wget -nv http://isl.gforge.inria.fr/isl-0.12.2.tar.bz2 && \
+	tar xjf isl-0.12.2.tar.bz2 && \
+	wget -nv http://gmplib.org/download/gmp/gmp-4.3.2.tar.bz2 && \
+	tar xjf gmp-4.3.2.tar.bz2 && \
+	wget -nv http://ftp.gnu.org/gnu/binutils/binutils-2.25.tar.bz2 && \
 	tar xjf binutils-2.25.tar.bz2 && \
-	wget http://downloads.sourceforge.net/project/mingw-w64/mingw-w64/mingw-w64-release/mingw-w64-v4.0.2.tar.bz2 && \
+	wget -nv http://downloads.sourceforge.net/project/mingw-w64/mingw-w64/mingw-w64-release/mingw-w64-v4.0.2.tar.bz2 && \
 	tar xjf mingw-w64-v4.0.2.tar.bz2 && \
-	wget http://ftp.gnu.org/gnu/gcc/gcc-4.9.2/gcc-4.9.2.tar.bz2 && \
+	wget -nv http://ftp.gnu.org/gnu/gcc/gcc-4.9.2/gcc-4.9.2.tar.bz2 && \
 	tar xjf gcc-4.9.2.tar.bz2
 
 RUN \
 	mkdir -p $BUILDROOT/binutils && \
 	cd $BUILDROOT/binutils && \
-	$SRC/binutils-2.25/configure --prefix=$DEST --with-sysroot=$DEST --host=i686-w64-mingw32 --target=i686-w64-mingw32 --enable-targets=i686-w64-mingw32,x86_64-w64-mingw32 && \
+	$SRC/binutils-2.25/configure --prefix=$DEST --with-sysroot=$DEST --host=$HOST --target=$TARGET --enable-targets=i686-w64-mingw32,x86_64-w64-mingw32 && \
 	make && \
 	make install
 
-RUN \
-	cd $SRC/gcc-4.9.2 && \
-	./contrib/download_prerequisites
- 
 RUN \
 	mkdir -p $SRC/gcc-4.9.2/gcc/winsup/mingw && \
 	ln -s /usr/i686-w64-mingw32/include $SRC/gcc-4.9.2/gcc/winsup/mingw/include
@@ -52,19 +60,39 @@ RUN \
 RUN \
 	mkdir -p $BUILDROOT/headers && \
 	cd $BUILDROOT/headers && \
-	$SRC/mingw-w64-v4.0.2/mingw-w64-headers/configure --prefix=$DEST/i686-w64-mingw32 --host=i686-w64-mingw32 --build=i686-w64-mingw32 && \
+	$SRC/mingw-w64-v4.0.2/mingw-w64-headers/configure --prefix=$PREFIX --host=$HOST --build=$BUILD && \
 	make && \
 	make install
 
 RUN \
-	ln -s $DEST/i686-w64-mingw32 $DEST/mingw && \
-	ln -s $DEST/i686-w64-mingw32/lib $DEST/i686-w64-mingw32/lib32
+	ln -s $PREFIX $DEST/mingw && \
+	ln -s $PREFIX/lib $PREFIX/lib32
 
 RUN \
-	mkdir -p $BUILDROOT/gcc && \
-	cd $BUILDROOT/gcc && \
-	$SRC/gcc-4.9.2/configure --host=i686-w64-mingw32 --build=x86_64-w64-mingw32 --target=i686-w64-mingw32 \
-	  --prefix=$DEST/i686-w64-mingw32 --with-sysroot=$DEST --enable-targets=all --enable-languages=c,c++,fortran \
-	  CFLAGS="-I$SRC/gcc-4.9.2/gcc/ginclude -I/usr/x86_64-w64-mingw32/include" && \
-	make all-gcc && \
-	make install-gcc
+	mkdir -p $BUILDROOT/gmp && \
+	cd $BUILDROOT/gmp && \
+	$SRC/gmp-4.3.2/configure --host=$HOST --build=$BUILD --prefix=$PREFIX --disable-shared --enable-static --enable-cxx --enable-targets=i686-w64-mingw32,x86_64-w64-mingw32 --enable-multilib && \
+	make && \
+	make install
+
+RUN \
+	mkdir -p $BUILDROOT/isl && \
+	cd $BUILDROOT/isl && \
+	CPPFLAGS=-I$PREFIX/include LDFLAGS=-L$PREFIX/lib $SRC/isl-0.12.2/configure --host=$HOST --build=$BUILD --prefix=$PREFIX --disable-shared --enable-static --with-gmp-prefix=$BUILDROOT --enable-targets=i686-w64-mingw32,x86_64-w64-mingw32 --enable-multilib && \
+	make && \
+	make install
+
+RUN \
+	mkdir -p $BUILDROOT/mpfr && \
+	cd $BUILDROOT/mpfr && \
+	CPPFLAGS="-I$SRC/gcc-4.9.2/gcc/ginclude -I$PREFIX/include" LDFLAGS="-L$PREFIX/lib" $SRC/mpfr-2.4.2/configure --host=$HOST --build=$BUILD --prefix=$PREFIX --disable-shared --enable-static --with-gmp=$BUILDROOT --enable-targets=i686-w64-mingw32,x86_64-w64-mingw32 --enable-multilib && \
+	make && \
+	make install
+
+RUN \
+	mkdir -p $BUILDROOT/mpc && \
+	cd $BUILDROOT/mpc && \
+	CPPFLAGS="-I$PREFIX/include" LDFLAGS="-L$PREFIX/lib" $SRC/mpc-0.8.1/configure --host=$HOST --build=$BUILD --prefix=$PREFIX --disable-shared --enable-static --with-gmp=$BUILDROOT --with-mpfr=$BUILDROOT --enable-targets=i686-w64-mingw32,x86_64-w64-mingw32 --enable-multilib && \
+	make && \
+	make install
+

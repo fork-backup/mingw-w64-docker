@@ -103,7 +103,8 @@ RUN \
 RUN \
 	mkdir -p $BUILDROOT/gcc && \
 	cd $BUILDROOT/gcc && \
-	ln -s . build-$HOST && \
+	ln -s . build-$BUILD && \
+	mkdir -p gcc && ln -sf auto-host.h gcc/auto-build.h && \
 	$SRC/gcc-4.9.2/configure --build=$BUILD --host=$HOST --target=$TARGET \
 	  --prefix=$PREFIX --with-sysroot=$DEST --disable-multilib --enable-languages=c,c++,fortran \
 	  --with-gmp=$PREFIX --with-mpfr=$PREFIX --with-mpc=$PREFIX \
