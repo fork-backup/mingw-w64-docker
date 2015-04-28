@@ -100,19 +100,3 @@ RUN \
 	make && \
 	make install
 
-RUN \
-	mkdir -p $BUILDROOT/gcc && \
-	cd $BUILDROOT/gcc && \
-	ln -s . build-$BUILD && \
-	mkdir -p gcc && ln -sf auto-host.h gcc/auto-build.h && \
-	$SRC/gcc-4.9.2/configure --build=$BUILD --host=$HOST --target=$TARGET \
-	  --prefix=$PREFIX --with-sysroot=$DEST --disable-multilib --enable-languages=c,c++,fortran \
-	  --with-gmp=$PREFIX --with-mpfr=$PREFIX --with-mpc=$PREFIX \
-	  --disable-shared --enable-static --enable-plugins \
-	  --enable-sjlj-exceptions --disable-dw2-exceptions --disable-seh-exceptions --enable-threads=win32 \
-	  --disable-cloog-version-check --enable-cloog-backend=isl --disable-isl-version-check \
-	  --enable-libgomp --disable-libstdcxx-pch --enable-fully-dynamic-string --enable-libstdcxx-time \
-	  --disable-nls --disable-werror --enable-checking=release \
-	  --with-gnu-as --with-gnu-ld && \
-	make && \
-	make install
