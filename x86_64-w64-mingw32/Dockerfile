@@ -116,9 +116,8 @@ RUN \
 	$SRC/gcc-4.9.2/configure --build=$BUILD --host=$HOST --target=$TARGET \
 	  --prefix=$PREFIX --with-sysroot=$DEST --disable-multilib --enable-languages=c,c++,fortran \
 	  --with-gmp=$PREFIX --with-mpfr=$PREFIX --with-mpc=$PREFIX --with-cloog=$PREFIX \
-	  --disable-shared --enable-static --enable-plugins \
+	  --disable-shared --enable-static --enable-plugins --enable-cloog-backend=isl \
 	  --enable-sjlj-exceptions --disable-dw2-exceptions --disable-seh-exceptions --enable-threads=win32 \
-	  --disable-cloog-version-check --enable-cloog-backend=isl --disable-isl-version-check \
 	  --enable-libgomp --disable-libstdcxx-pch --enable-fully-dynamic-string --enable-libstdcxx-time \
 	  --disable-nls --disable-werror --enable-checking=release \
 	  --with-gnu-as --with-gnu-ld && \

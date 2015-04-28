@@ -12,7 +12,7 @@ RUN \
 	useradd -ms /bin/bash builder && \
 	apt-get update && \
 	apt-get -y dist-upgrade && \
-	apt-get install -y wget make bzip2 gcc texinfo binutils-mingw-w64-i686 mingw-w64-i686-dev gcc-mingw-w64-i686 \
+	apt-get install -y wget make bzip2 gcc g++ texinfo binutils-mingw-w64-i686 mingw-w64-i686-dev gcc-mingw-w64-i686 \
 	g++-mingw-w64-i686 gfortran-mingw-w64-i686 mingw-w64 m4
 
 USER builder
@@ -44,7 +44,9 @@ RUN \
 	wget -nv http://downloads.sourceforge.net/project/mingw-w64/mingw-w64/mingw-w64-release/mingw-w64-v4.0.2.tar.bz2 && \
 	tar xjf mingw-w64-v4.0.2.tar.bz2 && \
 	wget -nv http://ftp.gnu.org/gnu/gcc/gcc-4.9.2/gcc-4.9.2.tar.bz2 && \
-	tar xjf gcc-4.9.2.tar.bz2
+	tar xjf gcc-4.9.2.tar.bz2 && \
+	wget -nv ftp://gcc.gnu.org/pub/gcc/infrastructure/cloog-0.18.1.tar.gz &&\
+	tar xzf cloog-0.18.1.tar.gz
 
 RUN \
 	mkdir -p $BUILDROOT/binutils && \
@@ -52,6 +54,10 @@ RUN \
 	$SRC/binutils-2.25/configure --prefix=$DEST --with-sysroot=$DEST --host=$HOST --target=$TARGET --enable-targets=i686-w64-mingw32,x86_64-w64-mingw32 && \
 	make && \
 	make install
+
+# RUN \
+#	cd $SRC/gcc-4.9.2 && \
+#	./contrib/download_prerequisites
 
 RUN \
 	mkdir -p $SRC/gcc-4.9.2/gcc/winsup/mingw && \
@@ -71,28 +77,51 @@ RUN \
 RUN \
 	mkdir -p $BUILDROOT/gmp && \
 	cd $BUILDROOT/gmp && \
-	$SRC/gmp-4.3.2/configure --host=$HOST --build=$BUILD --prefix=$PREFIX --disable-shared --enable-static --enable-cxx --enable-targets=i686-w64-mingw32,x86_64-w64-mingw32 --enable-multilib && \
+	$SRC/gmp-4.3.2/configure --host=$HOST --build=$BUILD --prefix=$PREFIX --disable-shared --enable-static --enable-cxx && \
 	make && \
 	make install
 
 RUN \
 	mkdir -p $BUILDROOT/isl && \
 	cd $BUILDROOT/isl && \
-	CPPFLAGS=-I$PREFIX/include LDFLAGS=-L$PREFIX/lib $SRC/isl-0.12.2/configure --host=$HOST --build=$BUILD --prefix=$PREFIX --disable-shared --enable-static --with-gmp-prefix=$BUILDROOT --enable-targets=i686-w64-mingw32,x86_64-w64-mingw32 --enable-multilib && \
+	CPPFLAGS=-I$PREFIX/include LDFLAGS=-L$PREFIX/lib $SRC/isl-0.12.2/configure --host=$HOST --build=$BUILD --prefix=$PREFIX --disable-shared --enable-static --with-gmp-prefix=$BUILDROOT && \
 	make && \
 	make install
 
 RUN \
 	mkdir -p $BUILDROOT/mpfr && \
 	cd $BUILDROOT/mpfr && \
-	CPPFLAGS="-I$SRC/gcc-4.9.2/gcc/ginclude -I$PREFIX/include" LDFLAGS="-L$PREFIX/lib" $SRC/mpfr-2.4.2/configure --host=$HOST --build=$BUILD --prefix=$PREFIX --disable-shared --enable-static --with-gmp=$BUILDROOT --enable-targets=i686-w64-mingw32,x86_64-w64-mingw32 --enable-multilib && \
+	CPPFLAGS="-I$SRC/gcc-4.9.2/gcc/ginclude -I$PREFIX/include" LDFLAGS="-L$PREFIX/lib" $SRC/mpfr-2.4.2/configure --host=$HOST --build=$BUILD --prefix=$PREFIX --disable-shared --enable-static --with-gmp=$BUILDROOT && \
 	make && \
 	make install
 
 RUN \
 	mkdir -p $BUILDROOT/mpc && \
 	cd $BUILDROOT/mpc && \
-	CPPFLAGS="-I$PREFIX/include" LDFLAGS="-L$PREFIX/lib" $SRC/mpc-0.8.1/configure --host=$HOST --build=$BUILD --prefix=$PREFIX --disable-shared --enable-static --with-gmp=$BUILDROOT --with-mpfr=$BUILDROOT --enable-targets=i686-w64-mingw32,x86_64-w64-mingw32 --enable-multilib && \
+	CPPFLAGS="-I$PREFIX/include" LDFLAGS="-L$PREFIX/lib" $SRC/mpc-0.8.1/configure --host=$HOST --build=$BUILD --prefix=$PREFIX --disable-shared --enable-static --with-gmp=$BUILDROOT --with-mpfr=$BUILDROOT && \
 	make && \
 	make install
 
+RUN \
+	mkdir -p $BUILDROOT/cloog && \
+	cd $BUILDROOT/cloog && \
+	CPPFLAGS="-I$PREFIX/include" LDFLAGS="-L$PREFIX/lib" $SRC/cloog-0.18.1/configure --host=$HOST --build=$BUILD --prefix=$PREFIX --with-gmp=$BUILDROOT --with-isl=$BUILDROOT --disable-shared --enable-static --prefix=$PREFIX && \
+	make && \
+	make install
+
+RUN \
+	mkdir -p $BUILDROOT/gcc && \
+	cd $BUILDROOT/gcc && \
+	mkdir -p gcc && ln -sf auto-host.h gcc/auto-build.h && \
+	$SRC/gcc-4.9.2/configure --build=$BUILD --host=$HOST --target=$TARGET \
+	  --prefix=$PREFIX --with-sysroot=$DEST --enable-targets=all --enable-languages=c,c++,fortran \
+	  --with-gmp=$PREFIX --with-mpfr=$PREFIX --with-mpc=$PREFIX --with-cloog=$PREFIX \
+	  --disable-shared --enable-static --enable-plugins --enable-cloog-backend=isl \
+	  --enable-sjlj-exceptions --disable-dw2-exceptions --disable-seh-exceptions --enable-threads=win32 \
+	  --enable-libgomp --disable-libstdcxx-pch --enable-fully-dynamic-string --enable-libstdcxx-time \
+	  --disable-nls --disable-werror --enable-checking=release \
+	  --with-gnu-as --with-gnu-ld && \
+	make maybe-all-libiberty && \
+	mkdir -p build-$BUILD/libiberty && cp libiberty/pex-win32.o build-$BUILD/libiberty && touch -t 12312359 build-$BUILD/libiberty/pex-win32.o && \
+	make && \
+	make install
