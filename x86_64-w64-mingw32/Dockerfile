@@ -126,3 +126,11 @@ RUN \
 	mkdir -p build-$BUILD/libiberty && cp libiberty/pex-win32.o build-$BUILD/libiberty && touch -t 12312359 build-$BUILD/libiberty/pex-win32.o && \
 	make && \
 	make install
+
+RUN \
+	mkdir -p $BUILDROOT/mingw-w64 && \
+	cd $BUILDROOT/mingw-w64 && \
+	CPPFLAGS="-I$PREFIX/include" LDFLAGS="-L$PREFIX/lib" $SRC/mingw-w64-v4.0.2/configure --host=$HOST --build=$BUILD --prefix=$PREFIX --with-gmp=$BUILDROOT --with-isl=$BUILDROOT --disable-shared --enable-static --prefix=$PREFIX && \
+	make && \
+	make install
+
