@@ -44,7 +44,9 @@ RUN \
 	wget -nv http://downloads.sourceforge.net/project/mingw-w64/mingw-w64/mingw-w64-release/mingw-w64-v4.0.2.tar.bz2 && \
 	tar xjf mingw-w64-v4.0.2.tar.bz2 && \
 	wget -nv http://ftp.gnu.org/gnu/gcc/gcc-4.9.2/gcc-4.9.2.tar.bz2 && \
-	tar xjf gcc-4.9.2.tar.bz2
+	tar xjf gcc-4.9.2.tar.bz2 && \
+	wget -nv ftp://gcc.gnu.org/pub/gcc/infrastructure/cloog-0.18.1.tar.gz &&\
+	tar xzf cloog-0.18.1.tar.gz
 
 RUN \
 	mkdir -p $BUILDROOT/binutils && \
@@ -101,19 +103,9 @@ RUN \
 	make install
 
 RUN \
-	mkdir -p $BUILDROOT/gcc && \
-	cd $BUILDROOT/gcc && \
-	mkdir -p gcc && ln -sf auto-host.h gcc/auto-build.h && \
-	$SRC/gcc-4.9.2/configure --build=$BUILD --host=$HOST --target=$TARGET \
-	  --prefix=$PREFIX --with-sysroot=$DEST --disable-multilib --enable-languages=c,c++,fortran \
-	  --with-gmp=$PREFIX --with-mpfr=$PREFIX --with-mpc=$PREFIX \
-	  --disable-shared --enable-static --enable-plugins \
-	  --enable-sjlj-exceptions --disable-dw2-exceptions --disable-seh-exceptions --enable-threads=win32 \
-	  --disable-cloog-version-check --enable-cloog-backend=isl --disable-isl-version-check \
-	  --enable-libgomp --disable-libstdcxx-pch --enable-fully-dynamic-string --enable-libstdcxx-time \
-	  --disable-nls --disable-werror --enable-checking=release \
-	  --with-gnu-as --with-gnu-ld && \
-	make maybe-all-libiberty && \
-	mkdir -p build-$BUILD/libiberty && cp libiberty/pex-win32.o build-$BUILD/libiberty && touch -t 12312359 build-$BUILD/libiberty/pex-win32.o && \
+	mkdir -p $BUILDROOT/cloog && \
+	cd $BUILDROOT/cloog && \
+	CPPFLAGS="-I$PREFIX/include" LDFLAGS="-L$PREFIX/lib" $SRC/cloog-0.18.1/configure --host=$HOST --build=$BUILD --prefix=$PREFIX --with-gmp=$BUILDROOT --with-isl=$BUILDROOT --disable-shared --enable-static --prefix=$PREFIX && \
 	make && \
 	make install
+
