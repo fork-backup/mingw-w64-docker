@@ -12,7 +12,7 @@ RUN \
 	useradd -ms /bin/bash builder && \
 	apt-get update && \
 	apt-get -y dist-upgrade && \
-	apt-get install -y wget make bzip2 gcc g++ texinfo m4 \
+	apt-get install -y wget make bzip2 gcc g++ texinfo m4 zip \
 	mingw-w64 mingw-w64-x86-64-dev mingw-w64-i686-dev
 
 USER builder
@@ -55,10 +55,6 @@ RUN \
 	$SRC/binutils-2.25/configure --prefix=$DEST --with-sysroot=$DEST --host=$HOST --target=$TARGET --disable-multilib && \
 	make && \
 	make install
-
-# RUN \
-#	cd $SRC/gcc-4.9.2 && \
-#	./contrib/download_prerequisites
 
 RUN \
 	mkdir -p $SRC/gcc-4.9.2/gcc/winsup/mingw && \
@@ -106,7 +102,7 @@ RUN \
 RUN \
 	mkdir -p $BUILDROOT/cloog && \
 	cd $BUILDROOT/cloog && \
-	CPPFLAGS="-I$PREFIX/include" LDFLAGS="-L$PREFIX/lib" $SRC/cloog-0.18.1/configure --host=$HOST --build=$BUILD --prefix=$PREFIX --with-gmp=$BUILDROOT --with-isl=$BUILDROOT --disable-shared --enable-static --prefix=$PREFIX && \
+	CPPFLAGS="-I$PREFIX/include" LDFLAGS="-L$PREFIX/lib" $SRC/cloog-0.18.1/configure --host=$HOST --build=$BUILD --prefix=$PREFIX --with-gmp=$BUILDROOT --with-isl=$BUILDROOT --disable-shared --enable-static && \
 	make && \
 	make install
 
@@ -128,8 +124,8 @@ RUN \
 	make install
 
 RUN \
-	mkdir -p $BUILDROOT/mingw-w64 && \
-	cd $BUILDROOT/mingw-w64 && \
-	CPPFLAGS="-I$PREFIX/include" LDFLAGS="-L$PREFIX/lib" $SRC/mingw-w64-v4.0.2/configure --host=$HOST --build=$BUILD --prefix=$PREFIX --with-gmp=$BUILDROOT --with-isl=$BUILDROOT --disable-shared --enable-static --prefix=$PREFIX && \
+	mkdir -p $BUILDROOT/mingw && \
+	cd $BUILDROOT/mingw && \
+	CPPFLAGS="-I$PREFIX/include" LDFLAGS="-L$PREFIX/lib" $SRC/mingw-w64-v4.0.2/configure --host=$HOST --build=$BUILD --prefix=$PREFIX && \
 	make && \
 	make install

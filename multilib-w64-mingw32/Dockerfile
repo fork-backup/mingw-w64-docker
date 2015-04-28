@@ -12,7 +12,7 @@ RUN \
 	useradd -ms /bin/bash builder && \
 	apt-get update && \
 	apt-get -y dist-upgrade && \
-	apt-get install -y wget make bzip2 gcc g++ texinfo m4 \
+	apt-get install -y wget make bzip2 gcc g++ texinfo m4 zip \
 	mingw-w64 mingw-w64-x86-64-dev mingw-w64-i686-dev
 
 USER builder
@@ -124,8 +124,15 @@ RUN \
 	make install
 
 RUN \
-	mkdir -p $BUILDROOT/mingw-w64 && \
-	cd $BUILDROOT/mingw-w64 && \
-	CPPFLAGS="-I$PREFIX/include" LDFLAGS="-L$PREFIX/lib" $SRC/mingw-w64-v4.0.2/configure --host=$HOST --build=$BUILD --prefix=$PREFIX --with-gmp=$BUILDROOT --with-isl=$BUILDROOT --disable-shared --enable-static --prefix=$PREFIX --enable-lib64 && \
+	mkdir -p $BUILDROOT/mingw32 && \
+	cd $BUILDROOT/mingw32 && \
+	CPPFLAGS="-I$PREFIX/include" LDFLAGS="-L$PREFIX/lib" $SRC/mingw-w64-v4.0.2/configure --host=i686-w64-mingw32 --prefix=$PREFIX --enable-lib32 && \
+	make && \
+	make install
+
+RUN \
+	mkdir -p $BUILDROOT/mingw64 && \
+	cd $BUILDROOT/mingw64 && \
+	CPPFLAGS="-I$PREFIX/include" LDFLAGS="-L$PREFIX/lib" $SRC/mingw-w64-v4.0.2/configure --host=x86_64-w64-mingw32 --prefix=$PREFIX --enable-lib64 && \
 	make && \
 	make install
