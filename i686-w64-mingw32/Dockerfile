@@ -12,8 +12,8 @@ RUN \
 	useradd -ms /bin/bash builder && \
 	apt-get update && \
 	apt-get -y dist-upgrade && \
-	apt-get install -y wget make bzip2 gcc g++ texinfo binutils-mingw-w64-i686 mingw-w64-i686-dev gcc-mingw-w64-i686 \
-	g++-mingw-w64-i686 gfortran-mingw-w64-i686 mingw-w64 m4
+	apt-get install -y wget make bzip2 gcc g++ texinfo m4 \
+	mingw-w64 mingw-w64-x86-64-dev ingw-w64-i686-dev
 
 USER builder
 
