@@ -150,3 +150,4 @@ RUN \
 	zip --symlinks -r $TARGET-multi.zip . && \
 	mv $TARGET-multi.zip ~
 
+USER root

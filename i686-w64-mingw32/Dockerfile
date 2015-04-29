@@ -142,3 +142,5 @@ RUN \
 	cd $DEST && \
 	zip --symlinks -r $TARGET.zip . && \
 	mv $TARGET.zip ~
+
+USER root

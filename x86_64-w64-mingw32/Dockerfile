@@ -114,31 +114,5 @@ RUN \
 	make && \
 	make install	
 
-RUN \
-	mkdir -p $BUILDROOT/gcc && \
-	cd $BUILDROOT/gcc && \
-	mkdir -p gcc && ln -sf auto-host.h gcc/auto-build.h && \
-	$SRC/gcc-4.9.2/configure --build=$BUILD --host=$HOST --target=$TARGET \
-	  --prefix=$PREFIX --with-sysroot=$DEST --disable-multilib --enable-languages=c,c++,fortran \
-	  --with-gmp=$PREFIX --with-mpfr=$PREFIX --with-mpc=$PREFIX --with-cloog=$PREFIX \
-	  --disable-shared --enable-static --enable-plugins --enable-cloog-backend=isl \
-	  --enable-sjlj-exceptions --disable-dw2-exceptions --disable-seh-exceptions --enable-threads=$THREADS \
-	  --enable-libgomp --disable-libstdcxx-pch --enable-fully-dynamic-string --enable-libstdcxx-time \
-	  --disable-nls --disable-werror --enable-checking=release \
-	  --with-gnu-as --with-gnu-ld && \
-	make maybe-all-libiberty && \
-	mkdir -p build-$BUILD/libiberty && cp libiberty/pex-win32.o build-$BUILD/libiberty && touch -t 12312359 build-$BUILD/libiberty/pex-win32.o && \
-	make && \
-	make install
+USER root
 
-RUN \
-	mkdir -p $BUILDROOT/mingw && \
-	cd $BUILDROOT/mingw && \
-	CPPFLAGS="-I$PREFIX/include" LDFLAGS="-L$PREFIX/lib" $SRC/mingw-w64-v4.0.2/configure --host=$HOST --build=$BUILD --prefix=$PREFIX && \
-	make && \
-	make install
-
-RUN \
-	cd $DEST && \
-	zip --symlinks -r $TARGET.zip . && \
-	mv $TARGET.zip ~
