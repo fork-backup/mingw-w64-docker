@@ -1,4 +1,9 @@
-# This uses the Debian (or Ubuntu) cross compiler to build a native gcc for win32 with multilib support
+# Uses the Debian cross compiler to build a native mingw-w64 gcc for:
+#
+# - Host: win32
+# - Target: win32
+# - Threading model: win32
+# - Exception model: sjlj
 #
 # Based on: http://sourceforge.net/p/mingw-w64/wiki2/Native%20Win64%20compiler/
 #
@@ -129,3 +134,8 @@ RUN \
 	CPPFLAGS="-I$PREFIX/include" LDFLAGS="-L$PREFIX/lib" $SRC/mingw-w64-v4.0.2/configure --host=$HOST --build=$BUILD --prefix=$PREFIX && \
 	make && \
 	make install
+
+RUN \
+	cd $DEST && \
+	zip --symlinks -r $TARGET.zip . && \
+	mv $TARGET.zip ~
