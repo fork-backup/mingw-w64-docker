@@ -18,7 +18,7 @@ RUN \
 	apt-get update && \
 	apt-get -y dist-upgrade && \
 	apt-get install -y wget make bzip2 gcc g++ texinfo m4 zip \
-	mingw-w64 mingw-w64-x86-64-dev mingw-w64-i686-dev
+	mingw-w64
 
 RUN \
 	chmod 777 /usr/local/include
@@ -142,5 +142,3 @@ RUN \
 	cd $DEST && \
 	zip --symlinks -r $TARGET.zip . && \
 	mv $TARGET.zip ~
-
-USER root
