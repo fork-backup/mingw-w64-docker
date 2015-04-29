@@ -20,6 +20,9 @@ RUN \
 	apt-get install -y wget make bzip2 gcc g++ texinfo m4 zip \
 	mingw-w64 mingw-w64-x86-64-dev mingw-w64-i686-dev
 
+RUN \
+	chmod 777 /usr/local/include
+
 USER builder
 
 ENV HOST i686-w64-mingw32
